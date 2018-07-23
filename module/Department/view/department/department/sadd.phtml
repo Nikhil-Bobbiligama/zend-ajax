@@ -1,0 +1,48 @@
+ <style>
+<?php include 'CSS/style.css'; ?>
+</style>
+
+<?php
+ // module/Student/view/student/student/add.phtml:
+ $title = 'Add new student';
+ $this->headTitle($title);
+ ?>
+ 
+ <div class="container">
+<h1><?php echo $this->escapeHtml($title); ?></h1><br>
+ <?php
+ $form->setAttribute('action', $this->url('department', array('action' => 'sadd')));
+ $form->prepare();
+
+ echo $this->form()->openTag($form);
+ echo $this->formHidden($form->get('id'));
+ ?><?php
+echo "<strong>Name:</strong> ";
+?><br>
+<?php
+ echo $this->formRow($form->get('sname'));
+ ?><br>
+ <?php
+echo "<strong>Email:</strong> ";
+?><br>
+<?php
+ echo $this->formRow($form->get('semail'));
+ ?><br>
+ <?php
+echo "<strong>Age:</strong> ";
+?><br>
+ <?php echo $this->formRow($form->get('sage'));
+ ?><br>
+ <?php
+echo "<strong>Department Name:</strong> ";
+?><br>
+<?php echo $this->formRow($form->get('sdepname'));
+ ?><br><br>
+ <?php
+ echo $this->formSubmit($form->get('submit'));
+ echo $this->form()->closeTag();
+ ?> 
+
+</div>
+
+

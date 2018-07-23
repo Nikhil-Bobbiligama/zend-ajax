@@ -1,0 +1,25 @@
+ <?php
+ // module/Department/view/department/department/delete.phtml:
+
+ $title = 'Delete department';
+ $this->headTitle($title);
+ ?>
+ <h1><?php echo $this->escapeHtml($title); ?></h1>
+
+ <p>Are you sure that you want to delete
+     
+     '<?php echo $this->escapeHtml($department->depname); ?>'?
+ </p>
+ <?php
+ $url = $this->url('department', array(
+     'action' => 'delete',
+     'depid'     => $this->depid,
+ ));
+ ?>
+ <form action="<?php echo $url; ?>" method="post">
+ <div>
+     <input type="hidden" name="depid" value="<?php echo (int) $department->depid; ?>" />
+     <input type="submit" name="del" value="Yes" />
+     <input type="submit" name="del" value="No" />
+ </div>
+ </form>

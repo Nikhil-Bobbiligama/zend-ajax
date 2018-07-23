@@ -1,0 +1,45 @@
+<html>
+
+
+ <h1>Class <?php  echo $this->escapeHtml($department->depname);?></h1>
+<?php
+ // module/Student/view/student/student/index.phtml:
+  
+ $title = 'Students List';
+ $this->headTitle($title);
+ ?>
+ <h1><?php echo $this->escapeHtml($title); ?></h1>
+ 
+
+ <table class=" table table-hover table-striped" style="width: 70%;">
+ 
+ <tr>
+     <th>Name</th>
+     <th>Email</th>
+     <th>Age</th>
+     <th>Department Name</th>
+     <th colspan="2"> Actions</th>
+      </tr>
+ <?php foreach ($students as $student) : 
+  if($department->depname == $student->sdepname):
+  	 ?>
+ <tr>
+    <td><?php echo $this->escapeHtml($student->sname);?></td>
+     <td><?php echo $this->escapeHtml($student->semail);?></td>
+     <td><?php echo $this->escapeHtml($student->sage);?></td>
+      <td><?php echo $this->escapeHtml($student->sdepname);?></td>
+     <td>
+         <a class="btn btn-info" href="<?php echo $this->url('department',
+             array('action'=>'sedit', 'id' => $student->id));?>">Edit</a>
+
+         <a class="btn btn-danger" href="<?php echo $this->url('department',
+             array('action'=>'sdelete', 'id' => $student->id));?>">Delete</a></button>
+     </td>
+ </tr>
+ <?php   endif;
+  endforeach; ?>
+ 
+ </table>
+ <p>
+     <a  class="btn btn-success"href="<?php echo $this->url('department', array('action'=>'sadd'));?>">Add new Student</a>
+ </p>

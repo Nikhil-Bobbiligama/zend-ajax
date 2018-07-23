@@ -1,0 +1,49 @@
+ <?php
+ // module/Student/view/student/student/edit.phtml:
+
+ $title = 'Edit Student';
+ $this->headTitle($title);
+ ?>
+ <h1><?php echo $this->escapeHtml($title); ?></h1>
+
+ <?php
+ $form = $this->form;
+ $form->setAttribute('action', $this->url(
+     'department',
+     array(
+         'action' => 'sedit',
+         'id'     => $this->id,
+     )
+ ));
+ $form->prepare();
+
+ echo  $this->form()->openTag($form);
+ echo $this->formHidden($form->get('id'));
+ 
+ echo "<strong>Name:</strong> ";
+?><br>
+<?php
+
+ echo $this->formRow($form->get('sname'));
+ ?><br>
+<?php
+echo "<strong>Email:</strong> ";
+?><br>
+<?php
+
+ echo $this->formRow($form->get('semail'));
+ ?><br>
+ <?php
+echo "<strong>Age:</strong> ";
+?><br>
+ <?php echo $this->formRow($form->get('sage'));
+ ?><br>
+ <?php
+echo "<strong>Department Name:</strong> ";
+?><br>
+<?php echo $this->formRow($form->get('sdepname'));
+ ?><br><br>
+ <?php
+ echo $this->formSubmit($form->get('submit'));
+ echo $this->form()->closeTag();
+ ?> 

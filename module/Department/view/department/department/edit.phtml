@@ -1,0 +1,25 @@
+ <?php
+ // module/Department/view/department/department/edit.phtml:
+
+ $title = 'Edit department';
+ $this->headTitle($title);
+ ?>
+ <h1><?php echo $this->escapeHtml($title); ?></h1>
+
+ <?php
+ $form = $this->form;
+ $form->setAttribute('action', $this->url(
+     'department',
+     array(
+         'action' => 'edit',
+         'depid'     => $this->depid,
+     )
+ ));
+ $form->prepare();
+
+ echo $this->form()->openTag($form);
+ echo $this->formHidden($form->get('depid'));
+ echo $this->formRow($form->get('depname'));
+ 
+ echo $this->formSubmit($form->get('submitd'));
+ echo $this->form()->closeTag();

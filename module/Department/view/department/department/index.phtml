@@ -1,0 +1,78 @@
+<html>
+<head>
+    <script type="text/javascript" src="js/index_scripts.js"></script>
+    
+ 
+    <title>hello</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+     <link rel="stylesheet" href="css/style2.css" type="text/css" media="screen, projection">
+      </head>
+        <body  onload = 'loadDepartments()' >
+   
+          <hr>
+          <div > 
+            <h2>Departments List</h2>         
+            <table class="table">
+              <thead>
+                <tr>
+                <th>  ID  </th>
+                <th>Department Name</th>
+                <th colspan="3">Actions</th>
+                </tr>
+              </thead>
+             <tbody id="department_details">
+              </tbody>
+
+            </table>
+
+             <button type="button" class="btn btn-primary" data-target="#add_department" data-toggle= "modal">Add Department </button>
+ 
+              <table class="table">
+                <h2>Student Details</h2>
+
+                  <thead>
+                     <tr>
+                      <th>  ID  </th>
+                      <th> Name</th>
+                       <th>Email</th>
+                      <th>Age</th>
+                      <th colspan ='2'>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="student_details" >
+
+                   </tbody>
+    
+              </table>
+    
+          <div id="edit_student_div">
+          </div>
+
+      </div>   
+ 
+     <div class="modal fade" id="add_department" role="dialog">
+       <div class="modal-dialog modal-sm" role="document">
+         <div class="modal-content">
+           <div class="modal-header">          
+             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+               <span aria-hidden="true">&times;</span>
+           </button>
+               <center><h2 class="modal-title" id="Modal"><b>New Department</b></h2></center>
+            </div>
+            <center>
+             <div class="modal-body">
+            <form id="create-form-A">
+            Department: <br/> <input type="text" id="create-department_name-A" /><br/><br/>
+            <button class="btn btn-success" data-dismiss="modal" onclick="add_department(event)">SUBMIT</button>
+          </form>
+          </div>
+      </center>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
+ 

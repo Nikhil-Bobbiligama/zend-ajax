@@ -1,0 +1,27 @@
+<?php
+ // module/Student/view/student/student/delete.phtml:
+
+ $title = 'Delete student';
+ $this->headTitle($title);
+ ?>
+ <h1><?php echo $this->escapeHtml($title); ?></h1>
+
+ <p>Are you sure that you want to delete
+ 	'<?php echo $this->escapeHtml($student->id); ?>' by
+     '<?php echo $this->escapeHtml($student->sname); ?>' by
+     '<?php echo $this->escapeHtml($student->semail); ?>' by
+     '<?php echo $this->escapeHtml($student->sage); ?>'?
+ </p>
+ <?php
+ $url = $this->url('department', array(
+     'action' => 'sdelete',
+     'id'     => $this->id,
+ ));
+ ?>
+ <form action="<?php echo $url; ?>" method="post">
+ <div>
+     <input type="hidden" name="id" value="<?php echo (int) $student->id; ?>" />
+     <input type="submit" name="del" value="Yes" />
+     <input type="submit" name="del" value="No" />
+ </div>
+ </form>

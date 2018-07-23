@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html>
+<head>
+   
+  <style>
+table {
+    font-family: arial, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+}
+
+td, th {
+    border: 1px solid #dddddd;
+    text-align: left;
+    padding: 8px;
+}
+
+tr:nth-child(even) {
+    background-color: #dddddd;
+}
+</style>
+    <title>hello</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
+<body>
+   
+  <hr>
+     <div class="table-responsive"> 
+     <h2>Class List</h2>         
+  <table class="table">
+        <thead>
+            <tr>
+                <th>  ID  </th>
+                <th>Class Name</th>
+                <th colspan="3">Actions</th>
+            </tr>
+        </thead>
+        <tbody id="t1">
+        </tbody>
+
+    </table>
+
+    <button type="button" class="btn btn-primary" data-toggle="collapse" data-target="#demo-A">Add Class </button>
+  <div id="demo-A" class="collapse">
+     <form id="create-form-A">
+        
+        Class Name:<br> <input type="text" id="create-class_name-A">
+        <br>
+         
+        <button type="button"class="ac" onclick="addcls(event)">Add </button>
+    </form>
+  </div>
+  
+  
+    
+<table class="table">
+  <h2>Student Details</h2>
+
+        <thead>
+            <tr>
+                <th>  ID  </th>
+                <th> Name</th>
+                <th>Age</th>
+                <th>Email</th>
+                <th colspan ='2'>Actions</th>
+            </tr>
+        </thead>
+        <tbody id="t2">
+        </tbody>
+    
+    </table>
+    
+  <div id="us">
+  </div>
+      </div>   
+</body>
+</html>
+ <script>
+   $(document).ready(loadPosts);
+   function loadPosts()
+{     var post_id;
+      var comment_id;
+      var tbodyE3;
+
+      var form = $(this).parent('form');
+      console.log($(this));
+        $.ajax
+          ({ 
+            url: '/posts',
+            type: 'GET',
+            dataType: 'json',
+              success: function(data) 
+                  {
+                console.log("Inside success data"); 
+                console.log(data);       
+                var tbodyEl = $('#t1');
+                tbodyEl.html('');
+                for(i in data)
+                      {tbodyEl.append('<tr> <td class="idc">'+data[i].id+'</td><td>' + data[i].title + '</td><td><%= link_to '<button type="button" class="btn btn-md btn-info vs" onclick="welcome()">view Students</button>'.html_safe%></td><td><%= link_to '<button type="button" class="btn btn-md btn-danger dc" >delete_class</button>'.html_safe%></td><td><%= link_to '<button type="button" class="btn btn-md btn-info ec" onclick="editcls()">edit_class</button>'.html_safe%></td></tr>');
+                    }
+                  },
+              error: function(data)
+                {
+              console.log("Inside Error");
+              console.log(data);
+                }
+          });
+}
+$(document).ready(function()
+{  
+           $('table').on('click', '.vs', function(event) {
+              console.log("in button click");
+                event.preventDefault();
+                var rowEl = $(this).closest('tr');
+                var id = rowEl.find('.idc').text();
+                post_id=id;
+                  $.ajax({
+                  url: 'posts/'+ post_id +'/comments/ ',
+                  type: 'GET',
+                  dataType: 'json',
+                    success: function (data) {
+                      console.log("Inside success student"); 
+                      console.log(data);       
+                      var tbodyE2 = $('#t2');
+                      tbodyE2.html('');
+                      for(i in data)
+                          {    tbodyE2.append('<tr> <td class="idc2">'+data[i].id+'</td><td>' + data[i].name + '</td><td>' + data[i].age + '</td><td>' + data[i].email + '</td><td><%= link_to '<button type="button" class="btn btn-md btn-info edstu" >edit Student</button>'.html_safe%></td><td><%= link_to '<button type="button" class="btn btn-md btn-danger ds" > Delete_Student</button>'.html_safe%></td><td></td></tr>');
+                           }
+                           tbodyE2.append('<tr><td><button type="button" class="btn btn-primary" data-toggle="collapse" data-target="#demo-S">Add Student </button><div id="demo-S" class="collapse"><form id="create-form-S">Name:<br> <input type="text" id="create-student_name-S"><br>Age:<br> <input type="text" id="create-student_age-S"><br>Email:<br> <input type="text" id="create-student_email-S"><br><button  type="button"  class=" btn btn-default as" onclick= "addstu(event)">Add </button></form></div></td></tr>')
+                        },
+                    error: function(data){
+                    console.log("Inside Error");
+                    console.log(data);
+            }
+            });   
+          });
+});
+  $(document).ready(function()
+{
+         $('table').on('click', '.edstu', function(event) {
+              console.log("in button edit click");
+                event.preventDefault();
+               var rowEl = $(this).closest('tr');
+                var id = rowEl.find('.idc2').text();
+                comment_id=id;
+                 $.ajax({
+                url: 'posts/'+ post_id +'/comments/ '+comment_id +'/edit',
+                type: 'GET',
+                 dataType: 'json',
+                success: function (data) {
+                   console.log("Inside edit student"); 
+                console.log(comment_id); 
+                console.log(data);
+                console.log(data.name);
+                var tbodyE3 = $('#us');
+              
+               tbodyE3.html('');
+                
+               //var product=JSON.parse(response);
+               //console.log(product);
+               
+                  tbodyE3.append('<h3>Edit Student Details </h3> <br>ID:<br> <input type="text" class="id" id="update-ID-A" size="35" value=" ' + data.id + '"><br>name:<br><input type="text" id="update-name-A" size="35" value=" ' + data.name + '" ><br>Age:<br><input type ="text" id="update-age-A" size="35" value=" ' + data.age + '"><br>Email:<br><input type ="text" id= "update-email-A" size="35" value=" ' + data.email + '"> <br><%= link_to '<button type="button" class="btn btn-md btn-info ups"onclick="upstu()" >update Student</button>'.html_safe%>');
+                      
+               //console.log(response);
+            },
+                error: function(data){
+                  console.log("Inside Error");
+                  console.log(data);
+            }
+        });   
+        });
+});
+//edit classs
+
+$(document).ready(function()
+{
+         $('table').on('click', '.ec', function(event) {
+              console.log("in button edit class click");
+                event.preventDefault();
+               var rowEl = $(this).closest('tr');
+                var id = rowEl.find('.idc').text();
+                console.log("edict class"+id);
+                 $.ajax({
+                url: 'posts/'+ id +'/edit',
+                type: 'GET',
+                 dataType: 'json',
+                success: function (data) {
+                   console.log("Inside edit class"); 
+                console.log(id); 
+                console.log(data);
+                console.log(data.title);
+                var tbodyE5 = $('#us');
+              
+                tbodyE5.html('');
+                
+               //var product=JSON.parse(response);
+               //console.log(product);
+               
+                  tbodyE5.append('<h3>Edit Class </h3> <br>ID:<br> <input type="text" class="id" id="update-ID-clsA" size="35" value=" ' + data.id + '"><br>Class name:<br><input type="text" id="update-name-clsA" size="35" value=" ' + data.title + '" > <br><%= link_to '<button type="button" class="btn btn-md btn-info upc"onclick="upcls()" >update Class</button>'.html_safe%>');
+                      
+               //console.log(response);
+         loadPosts();   },
+                error: function(data){
+                  console.log("Inside Error update cls" );
+                  console.log(data);
+            }
+        });   
+        });
+});
+//end of edit cls
+$(document).ready(function()
+{
+      $('table').on('click', '.dc', function(event) {
+        console.log("in delete button click");
+                //event.preventDefault();
+               var rowEl = $(this).closest('tr');
+              var id = rowEl.find('.idc').text();
+                  $.ajax({
+                    url: 'posts/'+ id ,
+                    type: 'DELETE',
+                     dataType: 'json',
+                       success: function (data) {
+                          console.log("Inside success student"); 
+                          console.log(data);       
+                
+            },
+            error: function(data){
+              console.log("Inside DELETE Error");
+              console.log(data);
+            }
+        });   
+      });
+ });
+$(document).ready(function()
+{
+      $('table').on('click', '.ds', function(event) {
+        console.log("in delete button click student");
+                //event.preventDefault();
+               var rowEl = $(this).closest('tr');
+              var id = rowEl.find('.idc2').text();
+                  $.ajax({
+                    url: 'posts/'+ post_id +'/comments/'+id  ,
+                    type: 'DELETE',
+                     dataType: 'json',
+                       success: function (data) {
+                          console.log("Inside delete student"); 
+                          console.log(data);       
+                
+            },
+            error: function(data){
+              console.log("Inside DELETE Error");
+              console.log(data);
+            }
+        });   
+      });
+ });
+/*
+$(document).ready(function()
+{
+      $('div').on('click', '.ups', function(event){
+        event.preventDefault();
+          alert("updateing");
+          event.preventDefault();
+          console.log("hellooo updating...!");
+            var  newName  = $('#update-name-A').val();
+            var newAge= $('#update-age-A').val();
+            var newEmail=$('#update-email-A').val();
+          var newid=$('#update-ID-A').val();
+            console.log("actual id"+newid);
+            id = newid.trimLeft();
+            console.log(id);
+           console.log(id[0]);
+           var y=id[0];
+            var x= id[1];
+      
+        
+        console.log("new id"+id);
+        console.log(newName);
+        console.log(newName.trimLeft());
+        console.log(newAge);
+
+        $.ajax({
+            url: 'posts/'+post_id +'/comments/ '+id.trimLeft() ,
+           type: 'PUT',
+            contentType: 'application/json',
+            data: JSON.stringify({ newName: newName.trimLeft(), newAge:newAge.trimLeft(), newEmail:newEmail.trimLeft()}),
+
+                
+            success: function(response) {
+              tbodyE3.html('');
+                console.log('sent from scripts'+ newName);
+                console.log(id);
+                
+            }
+           
+        });
+    });
+ });*/      
+/*
+$('div').on('click', '.ac', function(event){
+//event.preventDefault();
+alert("add class");
+event.preventDefault();
+console.log("hellooo clsss...!");
+ var  newName  = $('#create-class_name-A').val();
+        
+        //console.log(id);
+        console.log(newName);
+
+        $.ajax({
+            url: '/posts' ,
+           type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({ title: newName}),
+
+                
+            success: function(data) {
+             
+                //console.log('sent from scripts'+ newName);
+                //console.log(id);
+                
+            }
+           
+        });
+    });//end of add cls
+*/
+/*
+$(document).ready(function()
+{
+$('div').on('click', '.as', function(event){
+//event.preventDefault();
+alert("add stu");
+//event.preventDefault();
+console.log("hellooo ad stu...!");
+ var  newName  = $('#create-student_name-S').val();
+        var newAge= $('#create-student_age-S').val();
+        var newEmail=$('#create-student_email-S').val();
+       
+        console.log(newName);
+        console.log(newAge);
+        console.log(newEmail);
+       console.log(post_id);
+
+        $.ajax({
+            url: 'posts/'+ post_id +'/comments/ ',
+           type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({ newName: newName, newAge:newAge, newEmail:newEmail}),
+
+                
+            success: function(response) {
+                
+                console.log('sent from scripts'+ newName);
+                console.log(data);
+                
+            }
+           
+        });
+    });//end of add stud
+
+});
+//end of document ready
+*/
+function welcome() {
+  console.log("welcome");
+}
+function edit() {
+  console.log("edit");
+}
+function addcls(event){
+   event.preventDefault();
+console.log("hellooo clsss...!");
+ var  newName  = $('#create-class_name-A').val();
+        
+        //console.log(id);
+        console.log(newName);
+
+        $.ajax({
+            url: '/posts' ,
+           type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({ title: newName}),
+
+                
+            success: function(data) {
+             
+                //console.log('sent from scripts'+ newName);
+                //console.log(id);
+                
+            }
+           
+        });
+      }
+      function addstu(event)
+      {
+        event.preventDefault();
+alert("add stu");
+
+//event.preventDefault();
+console.log("hellooo ad stu...!");
+ var  newName  = $('#create-student_name-S').val();
+        var newAge= $('#create-student_age-S').val();
+        var newEmail=$('#create-student_email-S').val();
+       
+        console.log(newName);
+        console.log(newAge);
+        console.log(newEmail);
+       console.log(post_id);
+
+        $.ajax({
+            url: 'posts/'+ post_id +'/comments',
+           type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({ name: newName, age:newAge, email:newEmail}),
+
+                
+            success: function(response) {
+                
+                console.log('sent from scripts'+ newName);
+               // console.log(data);
+                
+            },
+            error: function(response)
+            {console.log("inside add stu error");
+            console.log(response);}
+           
+        });
+
+      }
+     function upstu()
+     {
+//alert("updateing");
+          
+          console.log("hellooo updating...!");
+            var  newName  = $('#update-name-A').val();
+            var newAge= $('#update-age-A').val();
+            var newEmail=$('#update-email-A').val();
+            var newid=$('#update-ID-A').val();
+            console.log("actual id"+newid);
+            id = newid.trimLeft();
+            console.log(id);
+            console.log(id[0]);
+            var y=id[0];
+            var x= id[1];
+        console.log("new id"+id);
+        console.log(newName);
+        console.log(newName.trimLeft());
+        console.log(newAge);
+         $.ajax({
+            url: 'posts/'+post_id.trimLeft() +'/comments/ '+id.trimLeft() ,
+           type: 'PUT',
+            contentType: 'application/json',
+            data: JSON.stringify({ id: id.trimLeft(), name: newName.trimLeft(), age:newAge.trimLeft(), email:newEmail.trimLeft(), post_id: post_id.trimLeft()}),
+              success: function(response) {
+           //   tbodyE3.html('');
+                console.log('sent from scripts'+ newName);
+                console.log(id);
+            }
+        });
+  }
+     /* function deletecls()
+      {
+         console.log("in del cls");
+         //event.preventDefault();
+               var rowEl = $(this).closest('tr');
+        var id = rowEl.find('.idc').text();
+        
+            $.ajax({
+                url: 'posts/'+ id ,
+                type: 'DELETE',
+                 dataType: 'json',
+                success: function (data) {
+                   console.log("Inside del clssssss success"); 
+                console.log(data);       
+                
+            },
+            error: function(data){
+              console.log("Inside DELETE Error");
+              console.log(data);
+            }
+        });   
+      }*/
+function upcls()
+{alert("updateing classs");
+  console.log("hellooo updating...!");
+            var  newTitle  = $('#update-name-clsA').val();
+             var  newid  = $('#update-ID-clsA').val();
+            console.log("actual id"+newid);
+            var id2 = newid.trimLeft();
+        console.log("new id"+id2);
+        console.log(newTitle);
+        console.log(newTitle.trimLeft());
+        console.log(id2);
+         $.ajax({
+            url: 'posts/'+id2.trimLeft() ,
+           type: 'PUT',
+            contentType: 'application/json',
+            data: JSON.stringify({id: newid.trimLeft(),title: newTitle.trimLeft()}),
+              success: function(response) {
+              
+                console.log('sent from scripts'+ newTitle);
+                console.log(id2);
+            }
+        });
+  
+}
+function editcls()
+{console.log("in edit class function");}
+ 
+</script>
+
+
+

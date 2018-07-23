@@ -1,0 +1,291 @@
+<html>
+<head>
+  <include rel="stylesheet" href="./style.css">
+  <title>HOME</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <script>
+
+    function display() {
+      var html_code="";
+      $.ajax({
+        url : 'http://zend/students/cindex',
+        type : 'POST',
+        async : 'true',
+        success : function(data) {
+          console.log(data);
+          $("#index tbody tr").remove();
+          for(var i=0;i<data.length;i++) {
+            var cid = data[i]['cid'];
+            var cname = "'"+data[i]['cname']+"'";
+            html_code = '<tr><td style="text-align: center"><strong>'+data[i]['cname']+'</strong></td>\
+            <td><button class="btn btn-primary" style="margin: 10px" onclick="show_students('+cname+')" data-target="#class_students" data-toggle="modal">View Students</button>\
+            <button class="btn btn-success" style="margin: 10px" onclick="edit_values('+cid+','+cname+')" data-target="#edit_class" data-toggle="modal">Edit Class</button>\
+            <button class="btn btn-danger" style="margin: 10px" onclick="deleteClass(this,'+cid+')">Delete Class</button></tr>'
+
+          $("#index").append(html_code);
+          }
+        }});
+    }
+
+    function show_students(cid) {
+      var html_code="";
+      $("#class_students #class_students-body #class_studentstable tbody tr").remove();
+      $.ajax({
+        url : "http://zend/students/index",
+        type : "POST",
+        data : ({cid : cid}),
+        success : function(data) {
+           console.log(data);
+          $("#saddbutton").data('cid',cid);
+          $("#saddbutton").attr('val',"welcome");
+          var cid1 = data['cid'];
+          for(var i=0;i<data.length;i++) {
+            var id = "'"+data[i]['id']+"'";
+            var sname = "'"+data[i]['sname']+"'";
+            var semail = "'"+data[i]['semail']+"'";
+            var cname = "'"+data[i]['class']+"'";
+            html_code = '<tr><td>'+data[i]['id']+'</td><td>'+data[i]['sname']+'</td><td>'+data[i]['semail']+'</td>\
+            <td><button class="btn btn-success" \
+              onclick="editStudentValues('+id+','+sname+','+semail+','+cname+')"\
+              data-target="#edit_student" data-toggle="modal">Edit</button>\
+            <button class="btn btn-danger" onclick="deleteStudent(this,'+id+')">Delete</button></td></tr>';
+            $("#class_students #class_students-body #class_studentstable").append(html_code);
+          }
+        }});
+    }
+    function addClass(cname) {   
+    console.log(cname);   
+      $.ajax({
+        type : "POST",
+        url : "http://zend/students/cadd",
+        data : {cname : cname},
+        success : function(data) {
+          console.log('hii');
+          display();
+          document.getElementById('cname').value="";
+        },
+        error : function(data) {
+          console.log('in error');
+
+        }
+      });
+    }
+    
+    function edit_values(cid,cname) {
+      $("#edit_class #cid1").val(cid);
+      $("#edit_class #cid").val(cid);
+      $("#edit_class #name").val(cname);
+    }
+
+    function editClass(cid,cname) {
+      $.ajax({
+        type : "POST",
+        url : "http://zend/students/cedit",
+        data : {cid : cid, cname : cname},
+        success : function(data) {
+          display();
+        }
+      });
+    }
+
+    function editStudentValues(id,sname,semail,cname) {
+      $("#edit_student #edit_student-body #sid").val(id);
+      $("#edit_student #edit_student-body #new_name").val(sname);
+      $("#edit_student #edit_student-body #new_email").val(semail);
+      $("#edit_student #edit_student-body #sclass").val(cname);
+    }
+
+    function editStudent(button,sid,sname,semail,cname) {
+      $.ajax({
+        type : "POST",
+        url : "http://zend/students/edit",
+        data : {sid : sid, sname : sname, semail : semail, cname : cname},
+        success : function(data) {
+          show_students(cname);
+        }
+      });
+    }
+
+
+    function addStudentValues(button) {
+      var html_code = $(button).data('cid');
+      $("#add_student #add_student-body #class_name").attr('value',html_code);
+      $("#addsubmitbutton").data('cid',html_code);
+    }
+
+    function deleteClass(button,cid) {
+      $.ajax({
+        type : "POST",
+        url : "http://zend/students/cdelete",
+        data : {cid : cid},
+        success : function(data) {
+          display();
+        }
+      });
+      $('#index').on('click',button, function(){
+        $(button).closest ('tr').remove ();
+      });
+    }
+
+    function addStudent(button,sname,semail,class_name) {
+      var cid = $(button).data('cid');
+      $.ajax({
+        type : "POST",
+        url : "http://zend/students/add",
+        data : {class_name : class_name,sname : sname,semail : semail},
+        success : function(data) {
+          show_students(cid);
+        }
+      })
+    }
+
+    function deleteStudent(button,id) {
+      var cid = $(button).data('cid');
+      $.ajax({
+        type : "POST",
+        url : "http://zend/students/delete",
+        data : {id : id},
+        success : function(data) {
+          show_students(cid);
+        }
+      })
+    }
+
+  </script>
+</head>
+<body onload="display()">
+  <center><h1>Class Details</h1></center>
+  <button class="btn btn-warning" style="float:right;" data-target="#add_class" data-toggle= "modal">Add Class</button>
+  <div class="container">
+    <table id="index" class="table">
+      <thead>
+        <tr>
+          <th>Class Name</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+      </tbody>
+    </table><br/><br/>
+  </div>
+
+  
+  <div class="modal fade" id="add_class" role="dialog">
+    <div class="modal-dialog modal-sm" role="document">
+      <div class="modal-content">
+        <div class="modal-header">          
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+            <center><h2 class="modal-title" id="Modal"><b>New Class</b></h2></center>
+        </div>
+        <center>
+          <div class="modal-body">
+            Class Name <br/> <input type="text" id="cname" name="cname"/><br/><br/>
+            <button class="btn btn-success" data-dismiss="modal" onclick="addClass(document.getElementById('cname').value)">SUBMIT</button>
+          </div>
+      </center>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="modal fade" id="edit_class" role="dialog">
+    <div class="modal-dialog modal-sm" role="document">
+      <div class="modal-content">
+        <div class="modal-header">          
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+          <center><h2 class="modal-title" id="Modal"><b>Edit Class</b></h2></center>
+        </div>
+        <center>
+          <div class="modal-body">
+            Class Id <br/> <input type="number" id="cid1" name="cid1" disabled/><br/><br/>
+            Class Name <br/> <input type="text" id="name" name="name"/><br/><br/>
+            <input type="hidden" id="cid" name="cid"/>
+            <button class="btn btn-success" data-dismiss="modal" onclick="editClass(document.getElementById('cid').value,document.getElementById('name').value)">SAVE</button>
+          </div>
+        </center>
+      </div>
+    </div>
+  </div>
+  
+
+  <div class="modal fade" id="class_students" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+          <center><h2 class="modal-title" id="Modal">Student Details</h2></center>
+        </div>
+        <div id="class_students-body" class="modal-body">
+          <table class='table table-striped' id='class_studentstable'>
+            <tfoot></tfoot>
+            <thead>
+              <tr><th>Student Id</th>
+                  <th>Student Name</th>
+                  <th>Student Email</th>
+                  <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+            </tbody>
+          </table>
+          <center><button class='btn btn-success' id='saddbutton' onclick="addStudentValues(this)" data-toggle='modal' data-target='#add_student'>Add Student</button></center>
+        </div>        
+      </div>
+    </div>
+  </div>
+
+
+  <div class="modal fade" id="add_student" role="dialog">
+    <div class="modal-dialog modal-sm" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+          <center><h2 class="modal-title" id="Modal"><b>New Student</b></h2></center>
+        </div>
+        <center>
+          <div id="add_student-body" class="modal-body">
+            Student Name <br/> <input type="text" id="sname" name="sname"/><br/><br/>
+            Student Email <br/> <input type="text" id="semail" name="semail"/><br/><br/>
+            <input type="hidden" id="class_name" value="" name="class_name"/>
+            <button class="btn btn-success" id="addsubmitbutton" data-dismiss="modal" onclick="addStudent(this,document.getElementById('sname').value,document.getElementById('semail').value,document.getElementById('class_name').value)">ADD</button>
+          </div>
+        </center>
+      </div>
+    </div>
+  </div>
+
+  
+  <div class="modal fade" id="edit_student" role="dialog">
+    <div class="modal-dialog modal-sm" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+          <center><h2 class="modal-title" id="Modal">Edit Student</h2></center>
+        </div>
+        <center>
+          <div id="edit_student-body" class="modal-body">
+            Sname <br/> <input type="text" id="new_name" name="new_name"/><br/><br/>
+            Semail <br/> <input type="text" id="new_email" name="new_email"/><br/><br/>
+            <input type="hidden" id="sid" name="sid"/>
+            <input type="hidden" id="sclass" name="sclass"/>
+            <button class="btn btn-success" data-dismiss="modal" onclick="editStudent(this,document.getElementById('sid').value,document.getElementById('new_name').value,document.getElementById('new_email').value,document.getElementById('sclass').value)">SUBMIT</button>
+          </div>
+        </center>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
